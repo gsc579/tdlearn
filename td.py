@@ -273,6 +273,7 @@ class GTD2(GTDBase):
         a = np.dot(f0, w)
 
         w += self.beta.next() * (rho * delta - a) * f0
+        # w += self.beta.next() * rho * (delta - a) * f0 难道不是这样么  p276最上面的公式
         theta += self.alpha.next() * rho * a * (f0 - self.gamma * f1)
 
         self.w = w
