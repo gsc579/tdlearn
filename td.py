@@ -134,9 +134,11 @@ class OffPolicyValueFunctionPredictor(ValueFunctionPredictor):
         """
         rho = target_pi.p(s0, a) / beh_pi.p(s0, a)
         kwargs["rho"] = rho
-        if not np.isfinite(rho):
-            import ipdb
+        if not np.isfinite(rho):#isfinite用于检查其参数是否是无穷大
+            import ipdb #代码调试-ipdb
             ipdb.set_trace()
+            #from ipdb import set_trace
+            #set_trace()#打断点
         return self.update_V(s0, s1, r, f0=f0, f1=f1, theta=theta, **kwargs)
 
 
@@ -159,19 +161,25 @@ class GTDBase(LinearValueFunctionPredictor, OffPolicyValueFunctionPredictor):
         if beta is not None:
             self.init_vals['beta'] = beta
         else:
-            self.init_vals["beta"] = alpha * mu
+            self.init_vals["beta"] = alpha * mu #alpha * mu？
 
         self.reset()
 
-    def clone(self):
+    def clone(self):#？
         o = self.__class__(self.init_vals['alpha'], self.init_vals[
                            'beta'], gamma=self.gamma, phi=self.phi)
         return o
 
     def __getstate__(self):
+        #当我们看到类似 __this__ 的方法（方法前后加下划线）时 ，不要调用它。 因为这意味着它是Python调用的方法，而不是您调用的方法
         res = self.__dict__
         for n in ["alpha", "beta"]:
             if isinstance(res[n], itertools.repeat):
+                """
+                isinstance函数说明:
+                当我们定义一个class的时候，我们实际上就定义了一种数据类型。我们定义的数据类型和Python自带的数据类型，比如str、list、dict没什么两样：
+                判断一个变量是否是某个类型可以用isinstance()判断：
+                """
                 res[n] = res[n].next()
         return res
 
